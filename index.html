@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="es" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingeniería Mecánica | Portal Interactivo & Laboratorio Virtual</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: {
+                            50: '#fef2f2',
+                            100: '#ffe1e1',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                            950: '#450a0a',
+                        },
+                        dark: {
+                            base: '#090b10',
+                            card: '#111520',
+                            elevated: '#1a202c',
+                            border: '#2a3447',
+                            accent: '#1e293b'
+                        },
+                        titanium: {
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            400: '#94a3b8',
+                            600: '#475569',
+                            800: '#1e293b'
+                        },
+                        steel: '#38bdf8'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Consolas', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #090b10;
+            color: #e2e8f0;
+        }
+        .cad-grid {
+            background-size: 30px 30px;
+            background-image: 
+                linear-gradient(to right, rgba(226, 232, 240, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(226, 232, 240, 0.03) 1px, transparent 1px);
+        }
+        .cad-grid-accent {
+            background-size: 150px 150px;
+            background-image: 
+                linear-gradient(to right, rgba(220, 38, 38, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(220, 38, 38, 0.07) 1px, transparent 1px);
+        }
+        .tech-card {
+            border: 1px solid rgba(226, 232, 240, 0.1);
+            background: linear-gradient(135deg, rgba(17, 21, 32, 0.95) 0%, rgba(13, 16, 24, 0.98) 100%);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+        }
+        .tech-card-hover:hover {
+            border-color: rgba(220, 38, 38, 0.5);
+            box-shadow: 0 0 25px rgba(220, 38, 38, 0.15);
+        }
+        .glow-red {
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.35);
+        }
+        .glass-header {
+            background: rgba(9, 11, 16, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #090b10;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #dc2626;
+        }
+    </style>
+</head>
+<body class="cad-grid min-h-screen flex flex-col justify-between overflow-x-hidden selection:bg-crimson-600 selection:text-white">
+
+    <header class="sticky top-0 z-50 glass-header border-b border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+                    <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-crimson-600 via-crimson-700 to-dark-base flex items-center justify-center text-white shadow-lg border border-crimson-500/40 glow-red">
+                        <i class="fa-solid fa-gear text-lg animate-spin-slow"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-black tracking-wider text-white">MECH<span class="text-crimson-500">LAB</span></span>
+                        <span class="block text-[10px] font-mono text-titanium-400 tracking-widest uppercase">Portal de Ingeniería Mecánica</span>
+                    </div>
+                </div>
+
+                <!-- Desktop Nav Links -->
+                <nav class="hidden lg:flex space-x-8 text-xs font-mono tracking-wider uppercase">
+                    <a href="#simuladores" class="text-titanium-400 hover:text-crimson-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-calculator text-crimson-500"></i> Laboratorio</a>
+                    <a href="#areas" class="text-titanium-400 hover:text-crimson-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-layer-group text-crimson-500"></i> Disciplinas</a>
+                    <a href="#componentes" class="text-titanium-400 hover:text-crimson-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-cubes text-crimson-500"></i> CAD Catalog</a>
+                    <a href="#formulas" class="text-titanium-400 hover:text-crimson-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-square-root-variable text-crimson-500"></i> Formulario</a>
+                    <a href="#contacto" class="text-titanium-400 hover:text-crimson-400 transition-colors flex items-center gap-2"><i class="fa-solid fa-id-card text-crimson-500"></i> Ingeniero</a>
+                </nav>
+
+                <!-- Status Badge -->
+                <div class="hidden sm:flex items-center gap-3">
+                    <div class="px-3 py-1.5 rounded-full bg-dark-card border border-dark-border text-[11px] font-mono text-titanium-400 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-titanium-200 font-semibold">Sistema Activo v3.5</span>
+                    </div>
+                </div>
+
+                <!-- Mobile menu button -->
+                <div class="lg:hidden">
+                    <button id="mobile-menu-btn" class="text-titanium-400 hover:text-white p-2">
+                        <i class="fa-solid fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-dark-card border-b border-dark-border px-6 py-4 space-y-3 font-mono text-xs uppercase tracking-wider">
+            <a href="#simuladores" class="block text-titanium-300 hover:text-crimson-400 py-2">Laboratorio Virtual</a>
+            <a href="#areas" class="block text-titanium-300 hover:text-crimson-400 py-2">Disciplinas de Ingeniería</a>
+            <a href="#componentes" class="block text-titanium-300 hover:text-crimson-400 py-2">Catálogo de Componentes</a>
+            <a href="#formulas" class="block text-titanium-300 hover:text-crimson-400 py-2">Formulario Técnico</a>
+            <a href="#contacto" class="block text-titanium-300 hover:text-crimson-400 py-2">Perfil del Ingeniero</a>
+        </div>
+    </header>
+
+    <section class="relative pt-12 pb-20 lg:pt-20 lg:pb-28 cad-grid-accent overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left: Text & Engineer Credential Badge -->
+                <div class="lg:col-span-7 space-y-6">
+                    
+                    <!-- HUD Header Tag -->
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-md bg-crimson-950/80 border border-crimson-600/40 text-crimson-400 text-xs font-mono uppercase tracking-widest">
+                        <i class="fa-solid fa-microchip text-crimson-500"></i>
+                        <span>Ingeniería Mecánica & Apl. Industrial</span>
+                    </div>
+
+                    <!-- Engineer Custom Credential Card -->
+                    <div class="tech-card rounded-2xl p-5 border-l-4 border-l-crimson-600">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                            <div>
+                                <span class="text-[10px] font-mono text-crimson-400 uppercase tracking-widest block mb-1">
+                                    <i class="fa-solid fa-certificate mr-1"></i> Ingeniero a Cargo
+                                </span>
+                                <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                                    Ing. Osvaldo Y. Rodríguez Sánchez
+                                </h2>
+                                <p class="text-xs text-titanium-400 font-mono mt-1 flex items-center gap-2">
+                                    <span><i class="fa-solid fa-location-dot text-crimson-500 mr-1"></i> Maunabo, Puerto Rico</span>
+                                    <span class="text-dark-border">•</span>
+                                    <span class="text-emerald-400"><i class="fa-solid fa-circle text-[8px] mr-1"></i> Disponible para Proyectos</span>
+                                </p>
+                            </div>
+
+                            <!-- Professional Contact Quick Bar -->
+                            <div class="flex items-center gap-2">
+                                <a href="https://www.linkedin.com/in/osvaldo-rodriguez" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-dark-elevated border border-dark-border flex items-center justify-center text-titanium-300 hover:text-white hover:bg-crimson-600 hover:border-crimson-500 transition-all shadow-md" title="LinkedIn Professional">
+                                    <i class="fa-brands fa-linkedin text-lg"></i>
+                                </a>
+                                <a href="https://grabcad.com" target="_blank" rel="noopener noreferrer" class="w-10 h-10 rounded-xl bg-dark-elevated border border-dark-border flex items-center justify-center text-titanium-300 hover:text-white hover:bg-crimson-600 hover:border-crimson-500 transition-all shadow-md" title="GrabCAD Portfolio">
+                                    <i class="fa-solid fa-cube text-lg"></i>
+                                </a>
+                                <a href="mailto:yadriel00207g@gmail.com" class="w-10 h-10 rounded-xl bg-dark-elevated border border-dark-border flex items-center justify-center text-titanium-300 hover:text-white hover:bg-crimson-600 hover:border-crimson-500 transition-all shadow-md" title="Correo Electrónico">
+                                    <i class="fa-solid fa-envelope text-lg"></i>
+                                </a>
+                                <a href="tel:+19398910914" class="w-10 h-10 rounded-xl bg-dark-elevated border border-dark-border flex items-center justify-center text-titanium-300 hover:text-white hover:bg-crimson-600 hover:border-crimson-500 transition-all shadow-md" title="Llamar (+1 939-891-0914)">
+                                    <i class="fa-solid fa-phone text-lg"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight leading-tight text-white">
+                        Sistemas Mecánicos, <span class="bg-gradient-to-r from-crimson-400 via-crimson-500 to-amber-500 bg-clip-text text-transparent">Simulación & Dinámica</span>
+                    </h1>
+                    
+                    <p class="text-titanium-400 text-base sm:text-lg font-normal leading-relaxed">
+                        Plataforma interactiva para la exploración de principios de <strong>Termodinámica, Mecánica de Fluidos, Cinemática de Maquinaria y Ciencia de Materiales</strong>. Diseñada para un análisis riguroso y simulación computacional.
+                    </p>
+
+                    <div class="flex flex-col sm:flex-row gap-4 pt-2">
+                        <a href="#simuladores" class="px-7 py-3.5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold text-white bg-crimson-600 hover:bg-crimson-500 transition-all shadow-lg shadow-crimson-600/30 flex items-center justify-center gap-3 group border border-crimson-500">
+                            <i class="fa-solid fa-play text-xs group-hover:translate-x-1 transition-transform"></i>
+                            Abrir Laboratorio Virtual
+                        </a>
+                        <a href="#contacto" class="px-7 py-3.5 rounded-xl font-mono text-xs uppercase tracking-wider font-bold text-titanium-200 bg-dark-card hover:bg-dark-elevated border border-dark-border transition-all flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-envelope"></i>
+                            Contactar Ingeniero
+                        </a>
+                    </div>
+
+                    <!-- Tech Quick Specs Grid -->
+                    <div class="pt-6 border-t border-dark-border grid grid-cols-3 gap-4 font-mono">
+                        <div class="bg-dark-card/60 p-3 rounded-xl border border-dark-border">
+                            <span class="text-[10px] text-titanium-400 uppercase block">Análisis CAD/CAE</span>
+                            <span class="text-base font-bold text-white">FEA & CFD</span>
+                        </div>
+                        <div class="bg-dark-card/60 p-3 rounded-xl border border-dark-border">
+                            <span class="text-[10px] text-titanium-400 uppercase block">Simulación</span>
+                            <span class="text-base font-bold text-crimson-400">Cinemática 2D</span>
+                        </div>
+                        <div class="bg-dark-card/60 p-3 rounded-xl border border-dark-border">
+                            <span class="text-[10px] text-titanium-400 uppercase block">Ubicación</span>
+                            <span class="text-base font-bold text-steel">Puerto Rico</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero Right: Interactive Mechanism HUD Frame -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-full max-w-md bg-dark-card rounded-3xl border border-dark-border p-5 tech-card">
+                        
+                        <!-- HUD Frame Header -->
+                        <div class="flex justify-between items-center border-b border-dark-border pb-3 mb-4 font-mono text-xs">
+                            <span class="text-titanium-400 flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-crimson-500 animate-ping"></span>
+                                SIM_ENGINE_KINEMATICS.CAD
+                            </span>
+                            <span class="text-crimson-400 font-bold" id="hero-rpm-readout">RPM: 120</span>
+                        </div>
+
+                        <!-- Canvas Hero Transmission Mechanism -->
+                        <div class="relative bg-dark-base rounded-2xl border border-dark-border p-2 flex items-center justify-center">
+                            <canvas id="heroTransmissionCanvas" width="340" height="300" class="w-full h-auto cursor-pointer" title="Haz clic para acelerar la transmisión"></canvas>
+                        </div>
+
+                        <!-- HUD Controls & Stats Footer -->
+                        <div class="mt-4 pt-3 border-t border-dark-border flex justify-between items-center text-[11px] font-mono text-titanium-400">
+                            <span><i class="fa-solid fa-hand-pointer text-crimson-500 mr-1"></i> Clic = Acelerar</span>
+                            <span class="text-steel" id="hero-ratio-readout">Relación: 2.50:1</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="simuladores" class="py-20 bg-dark-base/80 border-y border-dark-border relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-xs font-mono text-crimson-400 uppercase tracking-widest block mb-2">
+                    <i class="fa-solid fa-flask mr-1"></i> Módulos Computacionales
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white">Laboratorio Virtual de Ingeniería</h2>
+                <p class="text-titanium-400 mt-3 text-sm">Ejecuta simulaciones en tiempo real para evaluar variables mecánicas, cinemáticas, estructurales y fluídicas.</p>
+            </div>
+
+            <!-- Tab Buttons (4 Simulators) -->
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 font-mono text-xs uppercase tracking-wider">
+                <button id="tab-btn-torque" onclick="switchSimTab('torque')" class="sim-tab-btn px-5 py-3 rounded-xl font-bold transition-all flex items-center gap-2 bg-crimson-600 text-white shadow-lg border border-crimson-500">
+                    <i class="fa-solid fa-gauge-high"></i> 1. Torque & Potencia
+                </button>
+                <button id="tab-btn-gears" onclick="switchSimTab('gears')" class="sim-tab-btn px-5 py-3 rounded-xl font-bold transition-all flex items-center gap-2 bg-dark-card text-titanium-300 border border-dark-border hover:bg-dark-elevated">
+                    <i class="fa-solid fa-gears"></i> 2. Transmisión Engranajes
+                </button>
+                <button id="tab-btn-stress" onclick="switchSimTab('stress')" class="sim-tab-btn px-5 py-3 rounded-xl font-bold transition-all flex items-center gap-2 bg-dark-card text-titanium-300 border border-dark-border hover:bg-dark-elevated">
+                    <i class="fa-solid fa-compress-arrows-alt"></i> 3. Esfuerzo & Deformación
+                </button>
+                <button id="tab-btn-fluid" onclick="switchSimTab('fluid')" class="sim-tab-btn px-5 py-3 rounded-xl font-bold transition-all flex items-center gap-2 bg-dark-card text-titanium-300 border border-dark-border hover:bg-dark-elevated">
+                    <i class="fa-solid fa-water"></i> 4. Dinámica de Fluidos
+                </button>
+            </div>
+
+            <!-- SIMULATOR 1: TORQUE & POWER -->
+            <div id="sim-torque" class="sim-panel grid grid-cols-1 lg:grid-cols-12 gap-8 tech-card p-6 sm:p-8 rounded-3xl border border-dark-border">
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="flex items-center gap-2 text-crimson-400 font-mono text-xs uppercase font-bold">
+                        <i class="fa-solid fa-bolt"></i> Dinamometría y Curva de Potencia
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white">Análisis de Torque ($T$) y Potencia Rotacional ($P$)</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed">
+                        Determina la potencia de un eje giratorio en función del torque ejercido y la velocidad angular. La potencia mecánica aumenta proporcionalmente con las RPM hasta el límite dinámico del sistema.
+                    </p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <!-- Torque Slider -->
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Torque Aplicado ($T$):</label>
+                                <span id="val-torque" class="text-crimson-400 font-bold">350 N·m (258 lb·ft)</span>
+                            </div>
+                            <input type="range" id="input-torque" min="20" max="1200" value="350" step="10" class="w-full accent-crimson-600 cursor-pointer">
+                        </div>
+
+                        <!-- RPM Slider -->
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Velocidad Angular ($RPM$):</label>
+                                <span id="val-rpm" class="text-steel font-bold">3500 RPM</span>
+                            </div>
+                            <input type="range" id="input-rpm" min="200" max="9500" value="3500" step="100" class="w-full accent-sky-500 cursor-pointer">
+                        </div>
+
+                        <!-- Efficiency Slider -->
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Eficiencia Mecánica ($\eta$):</label>
+                                <span id="val-eff" class="text-amber-400 font-bold">88 %</span>
+                            </div>
+                            <input type="range" id="input-eff" min="50" max="100" value="88" step="1" class="w-full accent-amber-500 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+                    <div class="grid grid-cols-2 gap-4 font-mono">
+                        <div class="bg-dark-base p-4 rounded-2xl border border-dark-border text-center">
+                            <span class="text-[10px] text-titanium-400 uppercase">Potencia Útil (kW)</span>
+                            <div id="res-kw" class="text-2xl sm:text-3xl font-black text-crimson-400 mt-1">112.88 kW</div>
+                        </div>
+                        <div class="bg-dark-base p-4 rounded-2xl border border-dark-border text-center">
+                            <span class="text-[10px] text-titanium-400 uppercase">Potencia Útil (HP)</span>
+                            <div id="res-hp" class="text-2xl sm:text-3xl font-black text-amber-400 mt-1">151.37 HP</div>
+                        </div>
+                    </div>
+
+                    <!-- Gauge Canvas -->
+                    <div class="bg-dark-base p-4 rounded-2xl border border-dark-border flex flex-col items-center justify-center">
+                        <canvas id="gaugeCanvas" width="360" height="180" class="w-full max-w-[320px]"></canvas>
+                        <span class="text-[11px] text-titanium-400 font-mono mt-2">Tacómetro Dinámico de Potencia Normalizada</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULATOR 2: GEAR RATIO -->
+            <div id="sim-gears" class="sim-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-8 tech-card p-6 sm:p-8 rounded-3xl border border-dark-border">
+                <div class="lg:col-span-5 space-y-5">
+                    <div class="flex items-center gap-2 text-crimson-400 font-mono text-xs uppercase font-bold">
+                        <i class="fa-solid fa-gear"></i> Cinemática de Mecanismos
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white">Relación de Transmisión ($i$)</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed">
+                        Calcula el número de dientes, la distancia de centros y el comportamiento angular del par de engranajes acoplados.
+                    </p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Engranaje Conductor ($N_1$):</label>
+                                <span id="val-n1" class="text-crimson-400 font-bold">12 Dientes</span>
+                            </div>
+                            <input type="range" id="input-n1" min="8" max="36" value="12" step="1" class="w-full accent-crimson-600 cursor-pointer">
+                        </div>
+
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Engranaje Conducido ($N_2$):</label>
+                                <span id="val-n2" class="text-steel font-bold">36 Dientes</span>
+                            </div>
+                            <input type="range" id="input-n2" min="8" max="60" value="36" step="1" class="w-full accent-sky-500 cursor-pointer">
+                        </div>
+                    </div>
+
+                    <div class="bg-dark-base p-4 rounded-xl border border-dark-border font-mono text-xs space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-titanium-400">Relación $i = N_2 / N_1$:</span>
+                            <span id="res-ratio" class="text-amber-400 font-bold">3.00 : 1</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-titanium-400">Variación de Velocidad:</span>
+                            <span id="res-speed-eff" class="text-steel font-bold">Reducción a 33.3%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-titanium-400">Multiplicación de Torque:</span>
+                            <span id="res-torque-eff" class="text-crimson-400 font-bold">3.00x Aumento</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 bg-dark-base rounded-2xl border border-dark-border p-4 flex flex-col items-center justify-center min-h-[300px]">
+                    <canvas id="interactiveGearsCanvas" width="480" height="300" class="w-full h-auto max-w-[480px]"></canvas>
+                </div>
+            </div>
+
+            <!-- SIMULATOR 3: STRESS & STRAIN -->
+            <div id="sim-stress" class="sim-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-8 tech-card p-6 sm:p-8 rounded-3xl border border-dark-border">
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="flex items-center gap-2 text-crimson-400 font-mono text-xs uppercase font-bold">
+                        <i class="fa-solid fa-shield-halved"></i> Resistencia de Materiales
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white">Ensayo de Tracción y Deformación</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed">
+                        Aplica la Ley de Hooke ($\sigma = E \cdot \epsilon$) sobre una probeta bajo carga axial. Visualiza el cambio de longitud y verifica si el esfuerzo sobrepasa el límite elástico del material.
+                    </p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <label class="block text-titanium-200 mb-2">Material de la Probeta:</label>
+                            <select id="select-material" class="w-full bg-dark-card text-white border border-dark-border rounded-lg p-2.5 focus:outline-none focus:border-crimson-500 font-mono text-xs">
+                                <option value="210,250">Acero AISI 1020 (E = 210 GPa | Yield = 250 MPa)</option>
+                                <option value="70,270">Aluminio 6061-T6 (E = 70 GPa | Yield = 270 MPa)</option>
+                                <option value="110,880">Titanio Grado 5 Ti-6Al-4V (E = 110 GPa | Yield = 880 MPa)</option>
+                                <option value="100,200">Bronce Comercial (E = 100 GPa | Yield = 200 MPa)</option>
+                            </select>
+                        </div>
+
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Carga Axial ($F$):</label>
+                                <span id="val-force" class="text-crimson-400 font-bold">60 kN</span>
+                            </div>
+                            <input type="range" id="input-force" min="2" max="250" value="60" step="2" class="w-full accent-crimson-600 cursor-pointer">
+                        </div>
+
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Diámetro de Probeta ($d$):</label>
+                                <span id="val-diameter" class="text-steel font-bold">18 mm</span>
+                            </div>
+                            <input type="range" id="input-diameter" min="6" max="40" value="18" step="1" class="w-full accent-sky-500 cursor-pointer">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 flex flex-col justify-between space-y-6">
+                    <div class="grid grid-cols-2 gap-4 font-mono">
+                        <div class="bg-dark-base p-4 rounded-2xl border border-dark-border text-center">
+                            <span class="text-[10px] text-titanium-400 uppercase">Esfuerzo Normal ($\sigma$)</span>
+                            <div id="res-stress" class="text-2xl font-black text-crimson-400 mt-1">235.78 MPa</div>
+                        </div>
+                        <div class="bg-dark-base p-4 rounded-2xl border border-dark-border text-center">
+                            <span class="text-[10px] text-titanium-400 uppercase">Elongación ($\Delta L$)</span>
+                            <div id="res-elong" class="text-2xl font-black text-amber-400 mt-1">1.123 mm</div>
+                        </div>
+                    </div>
+
+                    <!-- Tensile Specimen Canvas -->
+                    <div class="bg-dark-base p-5 rounded-2xl border border-dark-border flex flex-col items-center justify-center min-h-[200px]">
+                        <canvas id="tensileCanvas" width="380" height="140" class="w-full h-auto max-w-[380px]"></canvas>
+                        <div id="yield-warning" class="text-xs font-mono mt-3 text-emerald-400 font-semibold">
+                            <i class="fa-solid fa-circle-check"></i> Zona Elástica Lineal (Seguro)
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIMULATOR 4: FLUID DYNAMICS / REYNOLDS NUMBER -->
+            <div id="sim-fluid" class="sim-panel hidden grid grid-cols-1 lg:grid-cols-12 gap-8 tech-card p-6 sm:p-8 rounded-3xl border border-dark-border">
+                <div class="lg:col-span-6 space-y-5">
+                    <div class="flex items-center gap-2 text-crimson-400 font-mono text-xs uppercase font-bold">
+                        <i class="fa-solid fa-water"></i> Hidrodinámica Aplicada
+                    </div>
+                    <h3 class="text-2xl font-extrabold text-white">Número de Reynolds & Régimen de Flujo</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed">
+                        El número de Reynolds ($Re = \frac{\rho \cdot v \cdot D}{\mu}$) caracteriza si el movimiento de un fluido dentro de un conducto es de carácter **Laminar** ($Re < 2300$), de **Transición**, o **Turbulento** ($Re > 4000$).
+                    </p>
+
+                    <div class="space-y-4 font-mono text-xs">
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Velocidad del Fluido ($v$):</label>
+                                <span id="val-fluid-v" class="text-crimson-400 font-bold">1.5 m/s</span>
+                            </div>
+                            <input type="range" id="input-fluid-v" min="0.1" max="8.0" value="1.5" step="0.1" class="w-full accent-crimson-600 cursor-pointer">
+                        </div>
+
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <div class="flex justify-between mb-2">
+                                <label class="text-titanium-200">Diámetro Tubería ($D$):</label>
+                                <span id="val-fluid-d" class="text-steel font-bold">0.05 m (50 mm)</span>
+                            </div>
+                            <input type="range" id="input-fluid-d" min="0.01" max="0.2" value="0.05" step="0.01" class="w-full accent-sky-500 cursor-pointer">
+                        </div>
+
+                        <div class="bg-dark-base p-4 rounded-xl border border-dark-border">
+                            <label class="block text-titanium-200 mb-2">Fluido Trabajo:</label>
+                            <select id="select-fluid-type" class="w-full bg-dark-card text-white border border-dark-border rounded-lg p-2.5 focus:outline-none focus:border-crimson-500 font-mono text-xs">
+                                <option value="1000,0.001">Agua a 20°C (ρ=1000 kg/m³ | μ=0.001 Pa·s)</option>
+                                <option value="870,0.29">Aceite SAE 30 (ρ=870 kg/m³ | μ=0.29 Pa·s)</option>
+                                <option value="1.2,0.000018">Aire a 20°C (ρ=1.2 kg/m³ | μ=0.000018 Pa·s)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-6 flex flex-col justify-between space-y-6 font-mono">
+                    <div class="bg-dark-base p-5 rounded-2xl border border-dark-border text-center">
+                        <span class="text-[10px] text-titanium-400 uppercase">Número de Reynolds ($Re$)</span>
+                        <div id="res-reynolds" class="text-3xl font-black text-amber-400 mt-1">75,000</div>
+                        <div id="res-flow-regime" class="text-xs font-bold text-crimson-400 uppercase mt-2">Régimen Turbulento</div>
+                    </div>
+
+                    <!-- Flow Visualization Canvas -->
+                    <div class="bg-dark-base p-4 rounded-2xl border border-dark-border flex flex-col items-center justify-center min-h-[200px]">
+                        <canvas id="fluidCanvas" width="380" height="150" class="w-full h-auto max-w-[380px]"></canvas>
+                        <span class="text-[10px] text-titanium-400 mt-2">Visualización de Líneas de Corriente</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="areas" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-crimson-400 uppercase tracking-widest block mb-2">
+                    <i class="fa-solid fa-graduation-cap mr-1"></i> Especialidades Técnicas
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white">Disciplinas de la Ingeniería Mecánica</h2>
+                <p class="text-titanium-400 mt-3 text-sm">Fundamentos físicos y analíticos que sustentan el diseño de la maquinaria moderna.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 1. Termodinámica -->
+                <div class="tech-card rounded-3xl p-7 tech-card-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-crimson-950/80 border border-crimson-600/40 flex items-center justify-center text-crimson-400 text-xl mb-5">
+                        <i class="fa-solid fa-fire-flame-curved"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Termodinámica y Transferencia de Calor</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed mb-4">
+                        Transformación de calor en trabajo útil. Análisis de ciclos Rankine, Otto, Brayton, cogeneración y conducción, convección y radiación térmica.
+                    </p>
+                    <ul class="text-[11px] font-mono text-titanium-300 space-y-1.5 border-t border-dark-border pt-4">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Eficiencia Exergética</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Intercambiadores de Calor Aletados</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Psicrometría y Refrigeración</li>
+                    </ul>
+                </div>
+
+                <!-- 2. Fluidos -->
+                <div class="tech-card rounded-3xl p-7 tech-card-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-steel/10 border border-steel/30 flex items-center justify-center text-steel text-xl mb-5">
+                        <i class="fa-solid fa-water"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Mecánica de Fluidos & CFD</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed mb-4">
+                        Dinámica de gases y líquidos. Modelado mediante ecuaciones de Navier-Stokes, pérdida de carga en tuberías y simulación por computador (CFD).
+                    </p>
+                    <ul class="text-[11px] font-mono text-titanium-300 space-y-1.5 border-t border-dark-border pt-4">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Aerodinámica de Alta Velocidad</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Turbomáquinas Hidráulicas</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Golpe de Ariete y Cavitación</li>
+                    </ul>
+                </div>
+
+                <!-- 3. Diseñ CAD/CAE -->
+                <div class="tech-card rounded-3xl p-7 tech-card-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl mb-5">
+                        <i class="fa-solid fa-drafting-compass"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Diseño Mecánico, CAD 3D & FEA</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed mb-4">
+                        Síntesis de maquinaria, tolerancias dimensionales GD&T, optimización topológica y análisis de fatiga mediante Método de Elementos Finitos.
+                    </p>
+                    <ul class="text-[11px] font-mono text-titanium-300 space-y-1.5 border-t border-dark-border pt-4">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> SolidWorks / Creo / Onshape</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Simulación Estática y Dinámica FEA</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Cálculo de Criterio de von Mises</li>
+                    </ul>
+                </div>
+
+                <!-- 4. Mecatrónica -->
+                <div class="tech-card rounded-3xl p-7 tech-card-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl mb-5">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Robótica & Mecatrónica Industrial</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed mb-4">
+                        Integración de cinemática de servomecanismos, actuadores electro-neumáticos, sensores inteligentes y programación de controladores PLC.
+                    </p>
+                    <ul class="text-[11px] font-mono text-titanium-300 space-y-1.5 border-t border-dark-border pt-4">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Cinemática Directa e Inversa</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Servocontro PID y Neumática</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Automatización de Celdas CNC</li>
+                    </ul>
+                </div>
+
+                <!-- 5. Materiales -->
+                <div class="tech-card rounded-3xl p-7 tech-card-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl mb-5">
+                        <i class="fa-solid fa-atom"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Ciencia e Ingeniería de Materiales</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed mb-4">
+                        Estructura cristalina de superaleaciones, polímeros avanzados, cerámicas técnicas y materiales compuestos de matriz de carbono.
+                    </p>
+                    <ul class="text-[11px] font-mono text-titanium-300 space-y-1.5 border-t border-dark-border pt-4">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Tratamientos Térmicos (Temple/Revenido)</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Ensayos Destructivos y NDT</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Tribología y Desgaste Superficial</li>
+                    </ul>
+                </div>
+
+                <!-- 6. Manufactura -->
+                <div class="tech-card rounded-3xl p-7 tech-card-hover transition-all">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl mb-5">
+                        <i class="fa-solid fa-industry"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">Manufactura Avanzada & CAM</h3>
+                    <p class="text-titanium-400 text-xs leading-relaxed mb-4">
+                        Procesos de arranque de viruta en CNC de 5 ejes, electroerosión (EDM), moldeo de alta precisión y manufactura aditiva metálica SLS/DMLS.
+                    </p>
+                    <ul class="text-[11px] font-mono text-titanium-300 space-y-1.5 border-t border-dark-border pt-4">
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Programación de Código G/M</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Impresión 3D Industrial Metálica</li>
+                        <li class="flex items-center gap-2"><i class="fa-solid fa-chevron-right text-crimson-500 text-[9px]"></i> Metrología CMM de Misión Crítica</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="componentes" class="py-24 bg-dark-base/90 border-t border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-mono text-crimson-400 uppercase tracking-widest block mb-2">
+                    <i class="fa-solid fa-cubes mr-1"></i> Biblioteca CAD & Maquinaria
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white">Componentes Mecánicos Clave</h2>
+                <p class="text-titanium-400 mt-3 text-sm">Explora las fichas técnicas detalladas de componentes estándar de la industria.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Comp 1 -->
+                <div onclick="openComponentModal('motor')" class="tech-card rounded-2xl p-6 cursor-pointer tech-card-hover transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-crimson-950 border border-crimson-600/40 flex items-center justify-center text-crimson-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-car-battery"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white group-hover:text-crimson-400 transition-colors">Motor V8 de Combustión</h4>
+                        <p class="text-titanium-400 text-xs mt-2 leading-relaxed">Máquina de ciclo Otto de 4 tiempos con árbol de levas doble (DOHC) y turbocompresor gemelo.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-dark-border flex justify-between items-center text-xs font-mono text-crimson-400">
+                        <span>Ver Ficha CAD</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Comp 2 -->
+                <div onclick="openComponentModal('turbina')" class="tech-card rounded-2xl p-6 cursor-pointer tech-card-hover transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-steel/10 border border-steel/30 flex items-center justify-center text-steel text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-fan"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white group-hover:text-crimson-400 transition-colors">Turbofán Aeroespacial</h4>
+                        <p class="text-titanium-400 text-xs mt-2 leading-relaxed">Turbomáquina motora de flujo axial con etapa de alta y baja presión para empuje a reacción.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-dark-border flex justify-between items-center text-xs font-mono text-crimson-400">
+                        <span>Ver Ficha CAD</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Comp 3 -->
+                <div onclick="openComponentModal('hidraulica')" class="tech-card rounded-2xl p-6 cursor-pointer tech-card-hover transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-oil-can"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white group-hover:text-crimson-400 transition-colors">Cilindro Hidráulico Oleoso</h4>
+                        <p class="text-titanium-400 text-xs mt-2 leading-relaxed">Actuador lineal de doble efecto capaz de ejercer fuerzas masivas hasta 350 bar de presión.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-dark-border flex justify-between items-center text-xs font-mono text-crimson-400">
+                        <span>Ver Ficha CAD</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Comp 4 -->
+                <div onclick="openComponentModal('epicicloidal')" class="tech-card rounded-2xl p-6 cursor-pointer tech-card-hover transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-compact-disc"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white group-hover:text-crimson-400 transition-colors">Reductor Planetario</h4>
+                        <p class="text-titanium-400 text-xs mt-2 leading-relaxed">Tren epicicloidal compuesto por sol, satélites y corona exterior para transmisiones de alta compacidad.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-dark-border flex justify-between items-center text-xs font-mono text-crimson-400">
+                        <span>Ver Ficha CAD</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Comp 5 -->
+                <div onclick="openComponentModal('bomba')" class="tech-card rounded-2xl p-6 cursor-pointer tech-card-hover transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-atom"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white group-hover:text-crimson-400 transition-colors">Bomba Centrífuga Industrial</h4>
+                        <p class="text-titanium-400 text-xs mt-2 leading-relaxed">Máquina hidráulica generadora de voluta con impulsor cerrado para transporte continuo de fluidos.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-dark-border flex justify-between items-center text-xs font-mono text-crimson-400">
+                        <span>Ver Ficha CAD</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Comp 6 -->
+                <div onclick="openComponentModal('robot')" class="tech-card rounded-2xl p-6 cursor-pointer tech-card-hover transition-all flex flex-col justify-between group">
+                    <div>
+                        <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fa-solid fa-robot"></i>
+                        </div>
+                        <h4 class="text-lg font-bold text-white group-hover:text-crimson-400 transition-colors">Brazo Articulado de 6 Ejes</h4>
+                        <p class="text-titanium-400 text-xs mt-2 leading-relaxed">Manipulador industrial cinemático para soldadura por arco y manufactura de alta repetibilidad.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-dark-border flex justify-between items-center text-xs font-mono text-crimson-400">
+                        <span>Ver Ficha CAD</span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="formulas" class="py-20 bg-dark-base border-t border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-mono text-crimson-400 uppercase tracking-widest block mb-2">
+                    <i class="fa-solid fa-book-bookmark mr-1"></i> Prontuario
+                </span>
+                <h2 class="text-3xl font-black text-white">Matriz de Formulación Técnica</h2>
+                <p class="text-titanium-400 mt-2 text-xs">Ecuaciones maestras utilizadas en el cálculo e ingeniería de diseño.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 font-mono text-xs">
+                <!-- Category 1 -->
+                <div class="tech-card rounded-2xl p-6 space-y-3">
+                    <div class="text-crimson-400 font-bold text-sm border-b border-dark-border pb-2 flex items-center justify-between">
+                        <span>Sólidos & Estructuras</span>
+                        <i class="fa-solid fa-cube"></i>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Esfuerzo Normal Axial:</span>
+                        <code class="text-white font-bold">σ = F / A</code>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Torsión en Ejes Circulares:</span>
+                        <code class="text-white font-bold">τ = (T · r) / J</code>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Criterio de Von Mises (2D):</span>
+                        <code class="text-white font-bold">σ_vm = √(σx² - σxσy + σy² + 3τxy²)</code>
+                    </div>
+                </div>
+
+                <!-- Category 2 -->
+                <div class="tech-card rounded-2xl p-6 space-y-3">
+                    <div class="text-steel font-bold text-sm border-b border-dark-border pb-2 flex items-center justify-between">
+                        <span>Termo-Fluidos</span>
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Ecuación de Bernoulli:</span>
+                        <code class="text-white font-bold">P₁ + ½ρv₁² + ρgh₁ = P₂ + ½ρv₂² + ρgh₂</code>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Pérdida de Carga Darcy-Weisbach:</span>
+                        <code class="text-white font-bold">h_f = f · (L / D) · (v² / 2g)</code>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Primera Ley Termodinámica:</span>
+                        <code class="text-white font-bold">Q - W = ΔU + ΔE_k + ΔE_p</code>
+                    </div>
+                </div>
+
+                <!-- Category 3 -->
+                <div class="tech-card rounded-2xl p-6 space-y-3">
+                    <div class="text-amber-400 font-bold text-sm border-b border-dark-border pb-2 flex items-center justify-between">
+                        <span>Cinemática & Dinámica</span>
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Potencia Mecánica Angular:</span>
+                        <code class="text-white font-bold">P = T · ω = (2π · N · T) / 60</code>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Relación de Engranajes:</span>
+                        <code class="text-white font-bold">i = ω₁ / ω₂ = N₂ / N₁ = d₂ / d₁</code>
+                    </div>
+                    <div class="bg-dark-base p-2.5 rounded-lg border border-dark-border">
+                        <span class="text-titanium-400 block text-[10px]">Energía Cinética Rotacional:</span>
+                        <code class="text-white font-bold">E_k = ½ · I · ω²</code>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contacto" class="py-20 bg-dark-card border-t border-dark-border">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-14">
+                <span class="text-xs font-mono text-crimson-400 uppercase tracking-widest block mb-2">
+                    <i class="fa-solid fa-address-card mr-1"></i> Contacto de Trabajo
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white">Perfil e Información del Ingeniero</h2>
+                <p class="text-titanium-400 mt-2 text-sm">Ponte en contacto directo para proyectos de consultoría, modelado CAD o ingeniería de diseño.</p>
+            </div>
+
+            <!-- Engineer Contact Matrix -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                
+                <!-- Left Details Card -->
+                <div class="lg:col-span-5 tech-card rounded-3xl p-8 space-y-6 border-l-4 border-l-crimson-600">
+                    <div>
+                        <span class="text-[10px] font-mono text-crimson-400 uppercase tracking-widest block">Ingeniero Mecánico</span>
+                        <h3 class="text-2xl font-black text-white mt-1">Osvaldo Y. Rodríguez Sánchez</h3>
+                        <p class="text-xs font-mono text-titanium-400 mt-1"><i class="fa-solid fa-location-dot text-crimson-500 mr-1.5"></i> Maunabo, Puerto Rico</p>
+                    </div>
+
+                    <p class="text-titanium-300 text-xs leading-relaxed">
+                        Especialista en desarrollo de proyectos de ingeniería mecánica, análisis analítico computacional, modelado y optimización de sistemas térmicos y cinemáticos.
+                    </p>
+
+                    <div class="space-y-3 font-mono text-xs border-t border-dark-border pt-5">
+                        <a href="mailto:yadriel00207g@gmail.com" class="flex items-center gap-3 p-3 rounded-xl bg-dark-base border border-dark-border hover:border-crimson-500 transition-all text-titanium-200 hover:text-white group">
+                            <div class="w-9 h-9 rounded-lg bg-crimson-950 flex items-center justify-center text-crimson-400 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div class="overflow-hidden">
+                                <span class="text-[9px] text-titanium-400 uppercase block">Correo Directo</span>
+                                <span class="font-bold truncate block">yadriel00207g@gmail.com</span>
+                            </div>
+                        </a>
+
+                        <a href="tel:+19398910914" class="flex items-center gap-3 p-3 rounded-xl bg-dark-base border border-dark-border hover:border-crimson-500 transition-all text-titanium-200 hover:text-white group">
+                            <div class="w-9 h-9 rounded-lg bg-emerald-950 flex items-center justify-center text-emerald-400 group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <span class="text-[9px] text-titanium-400 uppercase block">Teléfono Móvil</span>
+                                <span class="font-bold block">+1 (939) 891-0914</span>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- External Links -->
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <a href="https://www.linkedin.com/in/osvaldo-rodriguez" target="_blank" rel="noopener noreferrer" class="py-3 px-4 rounded-xl bg-dark-base border border-dark-border hover:border-crimson-500 text-titanium-200 hover:text-white text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-brands fa-linkedin text-lg text-steel"></i> LinkedIn
+                        </a>
+                        <a href="https://grabcad.com" target="_blank" rel="noopener noreferrer" class="py-3 px-4 rounded-xl bg-dark-base border border-dark-border hover:border-crimson-500 text-titanium-200 hover:text-white text-xs font-mono font-bold flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-solid fa-cube text-lg text-amber-400"></i> GrabCAD
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Form Component -->
+                <div class="lg:col-span-7 tech-card rounded-3xl p-8 border border-dark-border">
+                    <h3 class="text-xl font-bold text-white mb-2">Enviar Mensaje de Consulta Técnica</h3>
+                    <p class="text-titanium-400 text-xs mb-6">Completa el formulario para iniciar una solicitud de proyecto o consulta académica.</p>
+
+                    <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4 font-mono text-xs">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-titanium-300 mb-1.5">Nombre Completo:</label>
+                                <input type="text" required placeholder="Ej: Dr. Alejandro Vega" class="w-full bg-dark-base border border-dark-border rounded-xl p-3 text-white focus:outline-none focus:border-crimson-500 font-sans text-xs">
+                            </div>
+                            <div>
+                                <label class="block text-titanium-300 mb-1.5">Correo Electrónico:</label>
+                                <input type="email" required placeholder="nombre@empresa.com" class="w-full bg-dark-base border border-dark-border rounded-xl p-3 text-white focus:outline-none focus:border-crimson-500 font-sans text-xs">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-titanium-300 mb-1.5">Área de Interés:</label>
+                            <select class="w-full bg-dark-base border border-dark-border rounded-xl p-3 text-white focus:outline-none focus:border-crimson-500 font-sans text-xs">
+                                <option>Diseño Mecánico & Modelado CAD 3D</option>
+                                <option>Análisis por Elementos Finitos (FEA / Resistencia)</option>
+                                <option>Simulación de Fluidos (CFD / Pérdida de Carga)</option>
+                                <option>Automatización & Mecatrónica</option>
+                                <option>Consulta General / Proyecto Personalizado</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-titanium-300 mb-1.5">Descripción del Proyecto / Mensaje:</label>
+                            <textarea rows="4" required placeholder="Detalla los requerimientos de diseño, normas o consultas específicas..." class="w-full bg-dark-base border border-dark-border rounded-xl p-3 text-white focus:outline-none focus:border-crimson-500 font-sans text-xs"></textarea>
+                        </div>
+
+                        <button type="submit" class="w-full py-4 rounded-xl bg-crimson-600 hover:bg-crimson-500 text-white font-bold uppercase tracking-wider text-xs transition-all shadow-lg shadow-crimson-600/30 border border-crimson-500">
+                            <i class="fa-solid fa-paper-plane mr-2"></i> Enviar Consulta Técnica
+                        </button>
+                    </form>
+
+                    <div id="form-success-msg" class="hidden mt-4 p-4 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 font-mono text-xs text-center">
+                        <i class="fa-solid fa-circle-check mr-2"></i> Mensaje enviado correctamente. Te contactaremos pronto.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-dark-base border-t border-dark-border py-12 text-titanium-400 text-xs font-mono">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-crimson-600 flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-gear"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-white tracking-wider block">ING. OSVALDO Y. RODRÍGUEZ SÁNCHEZ</span>
+                    <span class="text-[10px] text-titanium-400 block">Maunabo, Puerto Rico • Licencia & Portafolio Técnico</span>
+                </div>
+            </div>
+
+            <p class="text-center text-titanium-400 text-[11px]">
+                Plataforma de Ingeniería Mecánica. &copy; 2026. Todos los derechos reservados.
+            </p>
+
+            <div class="flex space-x-4">
+                <a href="https://www.linkedin.com/in/osvaldo-rodriguez" target="_blank" rel="noopener noreferrer" class="hover:text-crimson-400"><i class="fa-brands fa-linkedin text-base"></i></a>
+                <a href="https://grabcad.com" target="_blank" rel="noopener noreferrer" class="hover:text-crimson-400"><i class="fa-solid fa-cube text-base"></i></a>
+                <a href="mailto:yadriel00207g@gmail.com" class="hover:text-crimson-400"><i class="fa-solid fa-envelope text-base"></i></a>
+                <a href="tel:+19398910914" class="hover:text-crimson-400"><i class="fa-solid fa-phone text-base"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- COMPONENT MODAL CONTAINER -->
+    <div id="modal-backdrop" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div id="modal-container" class="tech-card rounded-3xl max-w-2xl w-full p-6 sm:p-8 border border-dark-border relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeComponentModal()" class="absolute top-5 right-5 text-titanium-400 hover:text-white text-lg">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content" class="space-y-5">
+                <!-- Dynamically injected content -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Menu Toggle
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Contact Form Submission Handler
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            document.getElementById('contact-form').reset();
+            const msg = document.getElementById('form-success-msg');
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 5000);
+        }
+
+        // --- HERO TRANSMISSION MECHANISM CANVAS ---
+        const heroCanvas = document.getElementById('heroTransmissionCanvas');
+        const heroCtx = heroCanvas.getContext('2d');
+        let heroAngle = 0;
+        let heroSpeed = 0.02;
+
+        heroCanvas.addEventListener('click', () => {
+            heroSpeed += 0.08;
+        });
+
+        function drawPrecisionGear(ctx, cx, cy, outerRadius, teeth, color, angle, holeRadius = 0) {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(angle);
+            ctx.fillStyle = color;
+            ctx.beginPath();
+
+            const toothDepth = outerRadius * 0.18;
+            const toothAngle = (Math.PI * 2) / teeth;
+
+            for (let i = 0; i < teeth; i++) {
+                const a = i * toothAngle;
+                ctx.lineTo(Math.cos(a) * outerRadius, Math.sin(a) * outerRadius);
+                ctx.lineTo(Math.cos(a + toothAngle * 0.35) * (outerRadius + toothDepth), Math.sin(a + toothAngle * 0.35) * (outerRadius + toothDepth));
+                ctx.lineTo(Math.cos(a + toothAngle * 0.65) * (outerRadius + toothDepth), Math.sin(a + toothAngle * 0.65) * (outerRadius + toothDepth));
+                ctx.lineTo(Math.cos(a + toothAngle) * outerRadius, Math.sin(a + toothAngle) * outerRadius);
+            }
+            ctx.closePath();
+            ctx.fill();
+
+            // Inner Metallic Ring & Hole
+            ctx.beginPath();
+            ctx.arc(0, 0, holeRadius || outerRadius * 0.35, 0, Math.PI * 2);
+            ctx.fillStyle = '#090b10';
+            ctx.fill();
+            ctx.strokeStyle = '#2a3447';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function renderHeroCanvas() {
+            heroCtx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+            
+            if (heroSpeed > 0.02) heroSpeed *= 0.985;
+            heroAngle += heroSpeed;
+
+            const currentRPM = Math.round(heroSpeed * 6000);
+            document.getElementById('hero-rpm-readout').innerText = `RPM: ${currentRPM}`;
+
+            // Main Drive Gear (Red)
+            drawPrecisionGear(heroCtx, 120, 150, 75, 20, '#dc2626', heroAngle, 28);
+            // Driven Gear (Blue)
+            drawPrecisionGear(heroCtx, 235, 185, 45, 12, '#38bdf8', -heroAngle * (20/12) + 0.12, 18);
+            // Auxiliary Small Pinion (Amber)
+            drawPrecisionGear(heroCtx, 220, 75, 32, 8, '#f59e0b', -heroAngle * (20/8), 12);
+
+            requestAnimationFrame(renderHeroCanvas);
+        }
+
+        // --- SIMULATOR TABS SWITCHING ---
+        function switchSimTab(tab) {
+            document.querySelectorAll('.sim-tab-btn').forEach(btn => {
+                btn.classList.remove('bg-crimson-600', 'text-white', 'shadow-lg', 'border-crimson-500');
+                btn.classList.add('bg-dark-card', 'text-titanium-300');
+            });
+            document.querySelectorAll('.sim-panel').forEach(panel => panel.classList.add('hidden'));
+
+            const activeBtn = document.getElementById(`tab-btn-${tab}`);
+            activeBtn.classList.remove('bg-dark-card', 'text-titanium-300');
+            activeBtn.classList.add('bg-crimson-600', 'text-white', 'shadow-lg', 'border-crimson-500');
+
+            document.getElementById(`sim-${tab}`).classList.remove('hidden');
+
+            if (tab === 'gears') renderInteractiveGears();
+            if (tab === 'stress') updateStressSim();
+            if (tab === 'fluid') renderFluidCanvas();
+        }
+
+        // --- SIM 1: TORQUE & POWER LOGIC ---
+        const inputTorque = document.getElementById('input-torque');
+        const inputRpm = document.getElementById('input-rpm');
+        const inputEff = document.getElementById('input-eff');
+        const gaugeCanvas = document.getElementById('gaugeCanvas');
+        const gaugeCtx = gaugeCanvas.getContext('2d');
+
+        function updatePowerCalc() {
+            const T = parseFloat(inputTorque.value);
+            const rpm = parseFloat(inputRpm.value);
+            const eff = parseFloat(inputEff.value) / 100;
+
+            const lbft = Math.round(T * 0.737562);
+            document.getElementById('val-torque').innerText = `${T} N·m (${lbft} lb·ft)`;
+            document.getElementById('val-rpm').innerText = `${rpm} RPM`;
+            document.getElementById('val-eff').innerText = `${Math.round(eff * 100)} %`;
+
+            // Power (kW) = (Torque * RPM * 2 * PI) / 60,000 * efficiency
+            const kW = ((T * rpm * 2 * Math.PI) / 60000) * eff;
+            const hp = kW / 0.7457;
+
+            document.getElementById('res-kw').innerText = `${kW.toFixed(2)} kW`;
+            document.getElementById('res-hp').innerText = `${hp.toFixed(2)} HP`;
+
+            drawGauge(kW);
+        }
+
+        function drawGauge(powerKw) {
+            gaugeCtx.clearRect(0, 0, gaugeCanvas.width, gaugeCanvas.height);
+            const cx = gaugeCanvas.width / 2;
+            const cy = gaugeCanvas.height - 20;
+            const radius = 115;
+
+            // Gauge Base Track
+            gaugeCtx.beginPath();
+            gaugeCtx.arc(cx, cy, radius, Math.PI, 0, false);
+            gaugeCtx.lineWidth = 18;
+            gaugeCtx.strokeStyle = '#1e293b';
+            gaugeCtx.stroke();
+
+            // Active Power Arc
+            const maxKw = 1200;
+            const pct = Math.min(powerKw / maxKw, 1);
+            const angle = Math.PI + (pct * Math.PI);
+
+            const gradient = gaugeCtx.createLinearGradient(0, 0, gaugeCanvas.width, 0);
+            gradient.addColorStop(0, '#38bdf8');
+            gradient.addColorStop(0.5, '#f59e0b');
+            gradient.addColorStop(1, '#ef4444');
+
+            gaugeCtx.beginPath();
+            gaugeCtx.arc(cx, cy, radius, Math.PI, angle, false);
+            gaugeCtx.lineWidth = 18;
+            gaugeCtx.strokeStyle = gradient;
+            gaugeCtx.stroke();
+
+            // Needle
+            gaugeCtx.save();
+            gaugeCtx.translate(cx, cy);
+            gaugeCtx.rotate(angle);
+            gaugeCtx.beginPath();
+            gaugeCtx.moveTo(0, -6);
+            gaugeCtx.lineTo(radius - 12, 0);
+            gaugeCtx.lineTo(0, 6);
+            gaugeCtx.fillStyle = '#ffffff';
+            gaugeCtx.fill();
+            gaugeCtx.restore();
+
+            // Pin
+            gaugeCtx.beginPath();
+            gaugeCtx.arc(cx, cy, 10, 0, Math.PI * 2);
+            gaugeCtx.fillStyle = '#dc2626';
+            gaugeCtx.fill();
+        }
+
+        inputTorque.addEventListener('input', updatePowerCalc);
+        inputRpm.addEventListener('input', updatePowerCalc);
+        inputEff.addEventListener('input', updatePowerCalc);
+
+        // --- SIM 2: GEAR RATIO LOGIC ---
+        const inputN1 = document.getElementById('input-n1');
+        const inputN2 = document.getElementById('input-n2');
+        const gearsCanvas = document.getElementById('interactiveGearsCanvas');
+        const gearsCtx = gearsCanvas.getContext('2d');
+        let gearAngle1 = 0;
+
+        function updateGearValues() {
+            const n1 = parseInt(inputN1.value);
+            const n2 = parseInt(inputN2.value);
+
+            document.getElementById('val-n1').innerText = `${n1} Dientes`;
+            document.getElementById('val-n2').innerText = `${n2} Dientes`;
+
+            const ratio = n2 / n1;
+            document.getElementById('res-ratio').innerText = `${ratio.toFixed(2)} : 1`;
+
+            if (ratio > 1) {
+                document.getElementById('res-speed-eff').innerText = `Reducción (${((1/ratio)*100).toFixed(1)}%)`;
+                document.getElementById('res-torque-eff').innerText = `${ratio.toFixed(2)}x Aumento`;
+            } else if (ratio < 1) {
+                document.getElementById('res-speed-eff').innerText = `Multiplicación (${((1/ratio)*100).toFixed(1)}%)`;
+                document.getElementById('res-torque-eff').innerText = `${ratio.toFixed(2)}x Reducción`;
+            } else {
+                document.getElementById('res-speed-eff').innerText = `Directa (100%)`;
+                document.getElementById('res-torque-eff').innerText = `1.00x`;
+            }
+        }
+
+        function renderInteractiveGears() {
+            if (document.getElementById('sim-gears').classList.contains('hidden')) return;
+
+            gearsCtx.clearRect(0, 0, gearsCanvas.width, gearsCanvas.height);
+
+            const n1 = parseInt(inputN1.value);
+            const n2 = parseInt(inputN2.value);
+
+            const r1 = Math.min(Math.max(n1 * 3.8, 30), 95);
+            const r2 = Math.min(Math.max(n2 * 3.8, 30), 125);
+
+            const cx1 = 150;
+            const cy1 = gearsCanvas.height / 2;
+            const cx2 = cx1 + r1 + r2 + 12;
+            const cy2 = cy1;
+
+            gearAngle1 += 0.02;
+            const gearAngle2 = -gearAngle1 * (n1 / n2) + 0.15;
+
+            drawPrecisionGear(gearsCtx, cx1, cy1, r1, n1, '#dc2626', gearAngle1, r1 * 0.35);
+            drawPrecisionGear(gearsCtx, cx2, cy2, r2, n2, '#38bdf8', gearAngle2, r2 * 0.35);
+
+            requestAnimationFrame(renderInteractiveGears);
+        }
+
+        inputN1.addEventListener('input', updateGearValues);
+        inputN2.addEventListener('input', updateGearValues);
+
+        // --- SIM 3: STRESS & STRAIN LOGIC ---
+        const selectMaterial = document.getElementById('select-material');
+        const inputForce = document.getElementById('input-force');
+        const inputDiameter = document.getElementById('input-diameter');
+        const tensileCanvas = document.getElementById('tensileCanvas');
+        const tensileCtx = tensileCanvas.getContext('2d');
+
+        function updateStressSim() {
+            const [E_GPa, yield_MPa] = selectMaterial.value.split(',').map(Number);
+            const F_kN = parseFloat(inputForce.value);
+            const d_mm = parseFloat(inputDiameter.value);
+
+            document.getElementById('val-force').innerText = `${F_kN} kN`;
+            document.getElementById('val-diameter').innerText = `${d_mm} mm`;
+
+            const area_mm2 = Math.PI * Math.pow(d_mm / 2, 2);
+            const stress_MPa = (F_kN * 1000) / area_mm2;
+            const E_MPa = E_GPa * 1000;
+            const deltaL_mm = ((F_kN * 1000) * 1000) / (area_mm2 * E_MPa);
+
+            document.getElementById('res-stress').innerText = `${stress_MPa.toFixed(2)} MPa`;
+            document.getElementById('res-elong').innerText = `${deltaL_mm.toFixed(3)} mm`;
+
+            const warningEl = document.getElementById('yield-warning');
+            if (stress_MPa > yield_MPa) {
+                warningEl.className = "text-xs font-mono mt-3 text-crimson-400 font-bold animate-pulse";
+                warningEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> ¡ALERTA! Supera el Límite Elástico (${yield_MPa} MPa)`;
+            } else {
+                warningEl.className = "text-xs font-mono mt-3 text-emerald-400 font-semibold";
+                warningEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> Zona Elástica Lineal (Seguro < ${yield_MPa} MPa)`;
+            }
+
+            drawTensileBar(d_mm, deltaL_mm, stress_MPa > yield_MPa);
+        }
+
+        function drawTensileBar(diameter, elong, isYielded) {
+            tensileCtx.clearRect(0, 0, tensileCanvas.width, tensileCanvas.height);
+            const cy = tensileCanvas.height / 2;
+            const baseWidth = 210;
+            const visualElong = Math.min(elong * 30, 55);
+            const currentWidth = baseWidth + visualElong;
+            const h = Math.max(diameter * 1.4, 10);
+
+            // Left Anchor
+            tensileCtx.fillStyle = '#1e293b';
+            tensileCtx.fillRect(15, cy - 35, 20, 70);
+
+            // Bar Body
+            tensileCtx.fillStyle = isYielded ? '#ef4444' : '#dc2626';
+            tensileCtx.fillRect(35, cy - h/2, currentWidth, h);
+
+            // Right Grip
+            tensileCtx.fillStyle = '#38bdf8';
+            tensileCtx.fillRect(35 + currentWidth, cy - 28, 18, 56);
+
+            // Force Arrow
+            tensileCtx.strokeStyle = '#f59e0b';
+            tensileCtx.lineWidth = 3;
+            tensileCtx.beginPath();
+            tensileCtx.moveTo(55 + currentWidth, cy);
+            tensileCtx.lineTo(95 + currentWidth, cy);
+            tensileCtx.lineTo(87 + currentWidth, cy - 6);
+            tensileCtx.moveTo(95 + currentWidth, cy);
+            tensileCtx.lineTo(87 + currentWidth, cy + 6);
+            tensileCtx.stroke();
+        }
+
+        selectMaterial.addEventListener('change', updateStressSim);
+        inputForce.addEventListener('input', updateStressSim);
+        inputDiameter.addEventListener('input', updateStressSim);
+
+        // --- SIM 4: FLUID DYNAMICS (REYNOLDS) LOGIC ---
+        const inputFluidV = document.getElementById('input-fluid-v');
+        const inputFluidD = document.getElementById('input-fluid-d');
+        const selectFluidType = document.getElementById('select-fluid-type');
+        const fluidCanvas = document.getElementById('fluidCanvas');
+        const fluidCtx = fluidCanvas.getContext('2d');
+        let particleOffset = 0;
+
+        function renderFluidCanvas() {
+            if (document.getElementById('sim-fluid').classList.contains('hidden')) return;
+
+            const v = parseFloat(inputFluidV.value);
+            const D = parseFloat(inputFluidD.value);
+            const [rho, mu] = selectFluidType.value.split(',').map(Number);
+
+            document.getElementById('val-fluid-v').innerText = `${v.toFixed(1)} m/s`;
+            document.getElementById('val-fluid-d').innerText = `${D.toFixed(2)} m (${Math.round(D*1000)} mm)`;
+
+            // Re = (rho * v * D) / mu
+            const Re = Math.round((rho * v * D) / mu);
+            document.getElementById('res-reynolds').innerText = Re.toLocaleString();
+
+            const regimeEl = document.getElementById('res-flow-regime');
+            let isTurbulent = false;
+
+            if (Re < 2300) {
+                regimeEl.innerText = "Régimen Laminar (Capas Paraleas)";
+                regimeEl.className = "text-xs font-bold text-sky-400 uppercase mt-2";
+            } else if (Re <= 4000) {
+                regimeEl.innerText = "Régimen de Transmisión Inestable";
+                regimeEl.className = "text-xs font-bold text-amber-400 uppercase mt-2";
+            } else {
+                regimeEl.innerText = "Régimen Turbulento (Vórtices y Mezcla)";
+                regimeEl.className = "text-xs font-bold text-crimson-400 uppercase mt-2";
+                isTurbulent = true;
+            }
+
+            // Draw Pipe & Streamlines Canvas
+            fluidCtx.clearRect(0, 0, fluidCanvas.width, fluidCanvas.height);
+            
+            // Pipe Walls
+            fluidCtx.fillStyle = '#1e293b';
+            fluidCtx.fillRect(10, 15, 360, 12);
+            fluidCtx.fillRect(10, 123, 360, 12);
+
+            // Streamlines
+            particleOffset += v * 2;
+            if (particleOffset > 40) particleOffset = 0;
+
+            fluidCtx.lineWidth = 2;
+            fluidCtx.strokeStyle = isTurbulent ? '#ef4444' : '#38bdf8';
+
+            for (let y = 38; y <= 100; y += 18) {
+                fluidCtx.beginPath();
+                for (let x = 10; x <= 370; x += 10) {
+                    let dy = 0;
+                    if (isTurbulent) {
+                        dy = Math.sin((x + particleOffset * 3) * 0.08) * 4;
+                    }
+                    if (x === 10) fluidCtx.moveTo(x, y + dy);
+                    else fluidCtx.lineTo(x, y + dy);
+                }
+                fluidCtx.stroke();
+            }
+
+            requestAnimationFrame(renderFluidCanvas);
+        }
+
+        inputFluidV.addEventListener('input', renderFluidCanvas);
+        inputFluidD.addEventListener('input', renderFluidCanvas);
+        selectFluidType.addEventListener('change', renderFluidCanvas);
+
+        // --- COMPONENT MODAL LOGIC ---
+        const componentData = {
+            motor: {
+                title: 'Motor V8 de Combustión Interna',
+                desc: 'Motor térmico alternativo de 8 cilindros dispuestos en V a 90°. Utiliza el ciclo Otto con doble árbol de levas en cabeza e inyección directa.',
+                specs: [
+                    { label: 'Cilindrada Típica', val: '4.0L - 6.2L' },
+                    { label: 'Rendimiento Térmico Máx.', val: '38% - 42%' },
+                    { label: 'Relación de Compresión', val: '10.5:1 a 12.5:1' }
+                ]
+            },
+            turbina: {
+                title: 'Turbofán Aeroespacial de Alto Bypass',
+                desc: 'Motor a reacción con fan frontal que deriva la mayor parte del aire por el conducto exterior para maximizar el empuje y reducir el consumo.',
+                specs: [
+                    { label: 'Relación de Bypass', val: '10:1 a 12:1' },
+                    { label: 'Temperatura Entr. Turbina', val: '1,650 °C (3,000 °F)' },
+                    { label: 'Materiales Clave', val: 'Monocristales de Níquel / Titanio' }
+                ]
+            },
+            hidraulica: {
+                title: 'Cilindro Hidráulico Oleoso de Doble Efecto',
+                desc: 'Transforma energía hidráulica en trabajo lineal mediante la presión de aceite sobre un pistón estanco.',
+                specs: [
+                    { label: 'Presión Nominal de Trabajo', val: '210 bar (3,000 PSI)' },
+                    { label: 'Fuerza Axial Máxima', val: 'Hasta 500 kN' },
+                    { label: 'Eficiencia Mecánica', val: '95%' }
+                ]
+            },
+            epicicloidal: {
+                title: 'Tren Epicicloidal de Engranajes Planetarios',
+                desc: 'Sistema compacto de alta potencia con engranaje solar central, planetas portasatélites y corona dentada interior.',
+                specs: [
+                    { label: 'Relación de Reducción', val: 'Desde 3:1 hasta 10:1 por etapa' },
+                    { label: 'Eficiencia de Transmisión', val: '97% - 98%' },
+                    { label: 'Juego Axial (Backlash)', val: '< 3 arcmin (Alta precisión)' }
+                ]
+            },
+            bomba: {
+                title: 'Bomba Centrífuga Voluta Industrial',
+                desc: 'Máquina fluidodinámica que imparte energía cinética al fluido mediante un impulsor giratorio.',
+                specs: [
+                    { label: 'Altura Monométrica (H)', val: 'Hasta 120 m' },
+                    { label: 'NPSH Requerido', val: 'Bajo (Resistente a cavitación)' },
+                    { label: 'Velocidad Estándar', val: '1,750 / 3,500 RPM' }
+                ]
+            },
+            robot: {
+                title: 'Brazo Articulado Robótico de 6 Ejes',
+                desc: 'Manipulador cinemático de 6 grados de libertad impulsado por servomotores AC con reductores armónicos.',
+                specs: [
+                    { label: 'Repetibilidad Posicional', val: '±0.02 mm' },
+                    { label: 'Carga Útil (Payload)', val: '10 kg - 250 kg' },
+                    { label: 'Alcance de Trabajo', val: '1,400 mm - 3,200 mm' }
+                ]
+            }
+        };
+
+        function openComponentModal(key) {
+            const item = componentData[key];
+            if (!item) return;
+
+            document.getElementById('modal-content').innerHTML = `
+                <div class="border-b border-dark-border pb-4">
+                    <span class="text-[10px] font-mono text-crimson-400 uppercase tracking-widest">FICHA DE COMPONENTE CAD</span>
+                    <h3 class="text-2xl font-black text-white mt-1">${item.title}</h3>
+                </div>
+                <p class="text-titanium-300 text-xs leading-relaxed">${item.desc}</p>
+                <div class="space-y-2 bg-dark-base p-4 rounded-2xl border border-dark-border font-mono text-xs">
+                    ${item.specs.map(s => `
+                        <div class="flex justify-between border-b border-dark-card pb-2">
+                            <span class="text-titanium-400">${s.label}:</span>
+                            <span class="text-crimson-400 font-bold">${s.val}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            document.getElementById('modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeComponentModal() {
+            document.getElementById('modal-backdrop').classList.add('hidden');
+        }
+
+        // INIT ON LOAD
+        window.onload = function() {
+            renderHeroCanvas();
+            updatePowerCalc();
+            updateGearValues();
+            updateStressSim();
+            renderFluidCanvas();
+        };
+    </script>
+</body>
+</html>
